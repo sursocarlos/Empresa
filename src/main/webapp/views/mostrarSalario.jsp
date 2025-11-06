@@ -13,7 +13,7 @@
     <p><b>Nombre:</b> <c:out value="${empleado.nombre}"/></p>
     <p><b>Categoría:</b> <c:out value="${empleado.categoria}"/></p>
     <p><b>Años trabajados:</b> <c:out value="${empleado.anyos}"/></p>
-    <p><b>Salario:</b> <c:out value="${salario}"/></p>
+    <p><b>Salario:</b> <c:out value="${empleado.salario}"/></p>
 
     <br>
     <button type="button" onclick="window.location.href='index.jsp'">Volver</button>

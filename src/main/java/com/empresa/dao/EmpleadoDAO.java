@@ -168,19 +168,45 @@ public class EmpleadoDAO {
 
 		return em;
 	}
-	
 
-	
 	// obtener conexion pool
 	private Connection obtenerConexion() throws SQLException {
 		return Conexion.getConnection();
 	}
-
+	/*
 	private static final int SUELDO_BASE[] = { 50000, 70000, 90000, 110000, 130000, 150000, 170000, 190000, 210000,
 			230000 };
 
 	public int calcularSalario(Empleados emp) {
 		return SUELDO_BASE[emp.getCategoria() - 1] + emp.getAnyos() * 5000;
 	}
+	*/
+	
+	public List<Empleados> buscarEmpleados(String criterio) throws SQLException {
+	    List<Empleados> lista = new ArrayList<>();
+	    connection = obtenerConexion();
+	    
+	    String sql = "SELECT * FROM empleados WHERE dni LIKE ? OR nombre LIKE ? OR categoria LIKE ? OR anyos LIKE ?";
+	    statement = connection.prepareStatement(sql);
+	    String like = "%" + criterio + "%";
+	    statement.setString(1, like);
+	    statement.setString(2, like);
+	    statement.setString(3, like);
+	    statement.setString(4, like);
+
+	    ResultSet resultSet = statement.executeQuery();
+	    while (resultSet.next()) {
+	        Empleados e = new Empleados();
+	        e.setDni(resultSet.getString("dni"));
+	        e.setNombre(resultSet.getString("nombre"));
+	        e.setSexo(resultSet.getString("sexo").charAt(0));
+	        e.setCategoria(resultSet.getInt("categoria"));
+	        e.setAnyos(resultSet.getInt("anyos"));
+	        lista.add(e);
+	    }
+
+	    return lista;
+	}
+
 
 }

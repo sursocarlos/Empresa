@@ -98,9 +98,25 @@ public class EmpleadoController extends HttpServlet {
 		} else if (opcion.equals("salario")) {
 			RequestDispatcher requestDispatcher = request.getRequestDispatcher("/views/salario.jsp");
 			requestDispatcher.forward(request, response);
+		} else if (opcion.equals("buscarEmpleado")) {
+		    String criterio = request.getParameter("criterio");
+		    System.out.println("Buscando empleados con criterio: " + criterio);
+
+		    EmpleadoDAO empleadoDAO = new EmpleadoDAO();
+		    List<Empleados> lista = new ArrayList<>();
+
+		    try {
+		        lista = empleadoDAO.buscarEmpleados(criterio);
+		        request.setAttribute("lista", lista);
+		        RequestDispatcher rd = request.getRequestDispatcher("/views/resultadoBusqueda.jsp");
+		        rd.forward(request, response);
+		    } catch (SQLException e) {
+		        e.printStackTrace();
+		    }
 		}
 
-		// response.getWriter().append("Served at: ").append(request.getContextPath());
+
+
 	}
 
 	/**
@@ -161,15 +177,19 @@ public class EmpleadoController extends HttpServlet {
 
 			try {
 				Empleados empleado = empleadoDAO.obtenerEmpleado(dni);
-				
+
 				if (empleado.getDni() == null || empleado.getDni().isEmpty()) {
 					request.setAttribute("mensaje", "No existe ningún empleado con ese DNI.");
 					RequestDispatcher rd = request.getRequestDispatcher("/views/salario.jsp");
 					rd.forward(request, response);
 				} else {
+					/*	
 					int salario = empleadoDAO.calcularSalario(empleado);
+					*/
 					request.setAttribute("empleado", empleado);
+					/*
 					request.setAttribute("salario", salario);
+					*/
 					RequestDispatcher rd = request.getRequestDispatcher("/views/mostrarSalario.jsp");
 					rd.forward(request, response);
 				}

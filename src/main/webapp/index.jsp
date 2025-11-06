@@ -18,6 +18,9 @@
 		<tr>
 			<td><a href="empleados?opcion=salario">Mostar Salario</a></td>
 		</tr>
+		<tr>
+			<td><a href="views/buscarEmpleados.jsp">Buscar empleados</a></td>
+		</tr>
 	</table>
 </body>
 </html>
