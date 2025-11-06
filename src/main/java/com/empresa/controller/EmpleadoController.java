@@ -94,10 +94,10 @@ public class EmpleadoController extends HttpServlet {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		
+
 		} else if (opcion.equals("salario")) {
-		    RequestDispatcher requestDispatcher = request.getRequestDispatcher("/views/salario.jsp");
-		    requestDispatcher.forward(request, response);
+			RequestDispatcher requestDispatcher = request.getRequestDispatcher("/views/salario.jsp");
+			requestDispatcher.forward(request, response);
 		}
 
 		// response.getWriter().append("Served at: ").append(request.getContextPath());
@@ -111,29 +111,27 @@ public class EmpleadoController extends HttpServlet {
 			throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String opcion = request.getParameter("opcion");
-		
 
 		if (opcion.equals("guardar")) {
 			EmpleadoDAO empleadoDAO = new EmpleadoDAO();
 			Empleados empleado = new Empleados();
-			 empleado.setDni(request.getParameter("dni"));
-		     empleado.setNombre(request.getParameter("nombre"));
-		     
-		     empleado.setSexo(request.getParameter("sexo").charAt(0));
-		     
-		     empleado.setCategoria(Integer.parseInt(request.getParameter("categoria")));
-		     empleado.setAnyos(Integer.parseInt(request.getParameter("anyos")));
-		     
-		     String sexoStr = request.getParameter("sexo").trim();
-		     System.out.println("Sexo recibido del formulario: '" + sexoStr + "'");
-		     empleado.setSexo(sexoStr.charAt(0));
-		     
-			
+			empleado.setDni(request.getParameter("dni"));
+			empleado.setNombre(request.getParameter("nombre"));
+
+			empleado.setSexo(request.getParameter("sexo").charAt(0));
+
+			empleado.setCategoria(Integer.parseInt(request.getParameter("categoria")));
+			empleado.setAnyos(Integer.parseInt(request.getParameter("anyos")));
+
+			String sexoStr = request.getParameter("sexo").trim();
+			System.out.println("Sexo recibido del formulario: '" + sexoStr + "'");
+			empleado.setSexo(sexoStr.charAt(0));
+
 			try {
 				empleadoDAO.guardar(empleado);
 				System.out.println("Registro guardado satisfactoriamente...");
-	            RequestDispatcher requestDispatcher = request.getRequestDispatcher("/index.jsp");
-	            requestDispatcher.forward(request, response);
+				RequestDispatcher requestDispatcher = request.getRequestDispatcher("/index.jsp");
+				requestDispatcher.forward(request, response);
 
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
@@ -141,13 +139,13 @@ public class EmpleadoController extends HttpServlet {
 			}
 		} else if (opcion.equals("editar")) {
 			EmpleadoDAO empleadoDAO = new EmpleadoDAO();
-	        Empleados empleado = new Empleados();
+			Empleados empleado = new Empleados();
 
-	        empleado.setDni(request.getParameter("dni"));
-	        empleado.setNombre(request.getParameter("nombre"));
-	        empleado.setSexo(request.getParameter("sexo").charAt(0));
-	        empleado.setCategoria(Integer.parseInt(request.getParameter("categoria")));
-	        empleado.setAnyos(Integer.parseInt(request.getParameter("anyos")));
+			empleado.setDni(request.getParameter("dni"));
+			empleado.setNombre(request.getParameter("nombre"));
+			empleado.setSexo(request.getParameter("sexo").charAt(0));
+			empleado.setCategoria(Integer.parseInt(request.getParameter("categoria")));
+			empleado.setAnyos(Integer.parseInt(request.getParameter("anyos")));
 			try {
 				empleadoDAO.editar(empleado);
 				System.out.println("Registro editado satisfactoriamente...");
@@ -158,29 +156,28 @@ public class EmpleadoController extends HttpServlet {
 				e.printStackTrace();
 			}
 		} else if (opcion.equals("buscarSalario")) {
-		    String dni = request.getParameter("dni");
-		    EmpleadoDAO empleadoDAO = new EmpleadoDAO();
+			String dni = request.getParameter("dni");
+			EmpleadoDAO empleadoDAO = new EmpleadoDAO();
 
-		    try {
-		        Empleados empleado = empleadoDAO.obtenerEmpleado(dni);
+			try {
+				Empleados empleado = empleadoDAO.obtenerEmpleado(dni);
+				
+				if (empleado.getDni() == null || empleado.getDni().isEmpty()) {
+					request.setAttribute("mensaje", "No existe ningún empleado con ese DNI.");
+					RequestDispatcher rd = request.getRequestDispatcher("/views/salario.jsp");
+					rd.forward(request, response);
+				} else {
+					int salario = empleadoDAO.calcularSalario(empleado);
+					request.setAttribute("empleado", empleado);
+					request.setAttribute("salario", salario);
+					RequestDispatcher rd = request.getRequestDispatcher("/views/mostrarSalario.jsp");
+					rd.forward(request, response);
+				}
 
-		        if (empleado != null) {
-		            int salario = empleadoDAO.calcularSalario(empleado);
-		            request.setAttribute("empleado", empleado);
-		            request.setAttribute("salario", salario);
-		            RequestDispatcher rd = request.getRequestDispatcher("/views/mostrarSalario.jsp");
-		            rd.forward(request, response);
-		        } else {
-		            request.setAttribute("mensaje", "No existe ningún empleado con ese DNI.");
-		            RequestDispatcher rd = request.getRequestDispatcher("/views/salario.jsp");
-		            rd.forward(request, response);
-		        }
-
-		    } catch (SQLException e) {
-		        e.printStackTrace();
-		    }
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
-
 
 		// doGet(request, response);
 	}
