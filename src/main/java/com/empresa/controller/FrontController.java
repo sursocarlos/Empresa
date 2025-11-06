@@ -15,9 +15,11 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.empresa.dao.EmpleadoDAO;
 import com.empresa.empleados.Empleados;
-
+import com.empresa.factory.SalarioFactory;
 import com.empresa.strategy.EstrategiaSalario;
+/*
 import com.empresa.strategy.SalarioPorCategoriaYEanos;
+*/
 
 /**
  * Servlet implementation class ProductoController
@@ -172,53 +174,35 @@ public class FrontController extends HttpServlet {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}else if (opcion.equals("buscarSalario")) {
+		    String dni = request.getParameter("dni");
+		    EmpleadoDAO empleadoDAO = new EmpleadoDAO();
+
+		    try {
+		        Empleados empleado = empleadoDAO.obtenerEmpleado(dni);
+
+		        if (empleado.getDni() == null || empleado.getDni().isEmpty()) {
+		            request.setAttribute("mensaje", "No existe ningún empleado con ese DNI.");
+		            RequestDispatcher rd = request.getRequestDispatcher("/views/salario.jsp");
+		            rd.forward(request, response);
+		        } else {
+		            // Aquí calculamos el salario usando la Factory y Strategy
+		            EstrategiaSalario estrategia = SalarioFactory.getEstrategia("categoriaYAnos");
+		            int salario = estrategia.calcularSalario(empleado);
+
+		            request.setAttribute("empleado", empleado);
+		            request.setAttribute("salario", salario); // enviamos salario a la JSP
+
+		            RequestDispatcher rd = request.getRequestDispatcher("/views/mostrarSalario.jsp");
+		            rd.forward(request, response);
+		        }
+
+		    } catch (SQLException e) {
+		        e.printStackTrace();
+		    }
 		}
-		/*
-		 * else if (opcion.equals("buscarSalario")) { String dni =
-		 * request.getParameter("dni"); EmpleadoDAO empleadoDAO = new EmpleadoDAO();
-		 * 
-		 * try { Empleados empleado = empleadoDAO.obtenerEmpleado(dni);
-		 * 
-		 * if (empleado.getDni() == null || empleado.getDni().isEmpty()) {
-		 * request.setAttribute("mensaje", "No existe ningún empleado con ese DNI.");
-		 * RequestDispatcher rd = request.getRequestDispatcher("/views/salario.jsp");
-		 * rd.forward(request, response); } else {
-		 * 
-		 * request.setAttribute("empleado", empleado);
-		 * 
-		 * RequestDispatcher rd =
-		 * request.getRequestDispatcher("/views/mostrarSalario.jsp");
-		 * rd.forward(request, response); }
-		 * 
-		 * } catch (SQLException e) { e.printStackTrace(); } }
-		 */
-		else if (opcion.equals("buscarSalario")) {
-			String dni = request.getParameter("dni");
-			EmpleadoDAO empleadoDAO = new EmpleadoDAO();
 
-			try {
-				Empleados empleado = empleadoDAO.obtenerEmpleado(dni);
-
-				if (empleado.getDni() == null || empleado.getDni().isEmpty()) {
-					request.setAttribute("mensaje", "No existe ningún empleado con ese DNI.");
-					RequestDispatcher rd = request.getRequestDispatcher("/views/salario.jsp");
-					rd.forward(request, response);
-				} else {
-					// Aplicar la estrategia
-					EstrategiaSalario estrategia = new SalarioPorCategoriaYEanos();
-					int salario = estrategia.calcularSalario(empleado);
-
-					request.setAttribute("empleado", empleado);
-					request.setAttribute("salario", salario); // enviar salario a la JSP
-
-					RequestDispatcher rd = request.getRequestDispatcher("/views/mostrarSalario.jsp");
-					rd.forward(request, response);
-				}
-
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
+		
 
 	}
 
