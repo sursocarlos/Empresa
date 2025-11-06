@@ -16,6 +16,9 @@ import javax.servlet.http.HttpServletResponse;
 import com.empresa.dao.EmpleadoDAO;
 import com.empresa.empleados.Empleados;
 
+import com.empresa.strategy.EstrategiaSalario;
+import com.empresa.strategy.SalarioPorCategoriaYEanos;
+
 /**
  * Servlet implementation class ProductoController
  */
@@ -99,23 +102,21 @@ public class FrontController extends HttpServlet {
 			RequestDispatcher requestDispatcher = request.getRequestDispatcher("/views/salario.jsp");
 			requestDispatcher.forward(request, response);
 		} else if (opcion.equals("buscarEmpleado")) {
-		    String criterio = request.getParameter("criterio");
-		    System.out.println("Buscando empleados con criterio: " + criterio);
+			String criterio = request.getParameter("criterio");
+			System.out.println("Buscando empleados con criterio: " + criterio);
 
-		    EmpleadoDAO empleadoDAO = new EmpleadoDAO();
-		    List<Empleados> lista = new ArrayList<>();
+			EmpleadoDAO empleadoDAO = new EmpleadoDAO();
+			List<Empleados> lista = new ArrayList<>();
 
-		    try {
-		        lista = empleadoDAO.buscarEmpleados(criterio);
-		        request.setAttribute("lista", lista);
-		        RequestDispatcher rd = request.getRequestDispatcher("/views/resultadoBusqueda.jsp");
-		        rd.forward(request, response);
-		    } catch (SQLException e) {
-		        e.printStackTrace();
-		    }
+			try {
+				lista = empleadoDAO.buscarEmpleados(criterio);
+				request.setAttribute("lista", lista);
+				RequestDispatcher rd = request.getRequestDispatcher("/views/resultadoBusqueda.jsp");
+				rd.forward(request, response);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
 		}
-
-
 
 	}
 
@@ -171,7 +172,27 @@ public class FrontController extends HttpServlet {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		} else if (opcion.equals("buscarSalario")) {
+		}
+		/*
+		 * else if (opcion.equals("buscarSalario")) { String dni =
+		 * request.getParameter("dni"); EmpleadoDAO empleadoDAO = new EmpleadoDAO();
+		 * 
+		 * try { Empleados empleado = empleadoDAO.obtenerEmpleado(dni);
+		 * 
+		 * if (empleado.getDni() == null || empleado.getDni().isEmpty()) {
+		 * request.setAttribute("mensaje", "No existe ningún empleado con ese DNI.");
+		 * RequestDispatcher rd = request.getRequestDispatcher("/views/salario.jsp");
+		 * rd.forward(request, response); } else {
+		 * 
+		 * request.setAttribute("empleado", empleado);
+		 * 
+		 * RequestDispatcher rd =
+		 * request.getRequestDispatcher("/views/mostrarSalario.jsp");
+		 * rd.forward(request, response); }
+		 * 
+		 * } catch (SQLException e) { e.printStackTrace(); } }
+		 */
+		else if (opcion.equals("buscarSalario")) {
 			String dni = request.getParameter("dni");
 			EmpleadoDAO empleadoDAO = new EmpleadoDAO();
 
@@ -183,13 +204,13 @@ public class FrontController extends HttpServlet {
 					RequestDispatcher rd = request.getRequestDispatcher("/views/salario.jsp");
 					rd.forward(request, response);
 				} else {
-					/*	
-					int salario = empleadoDAO.calcularSalario(empleado);
-					*/
+					// Aplicar la estrategia
+					EstrategiaSalario estrategia = new SalarioPorCategoriaYEanos();
+					int salario = estrategia.calcularSalario(empleado);
+
 					request.setAttribute("empleado", empleado);
-					/*
-					request.setAttribute("salario", salario);
-					*/
+					request.setAttribute("salario", salario); // enviar salario a la JSP
+
 					RequestDispatcher rd = request.getRequestDispatcher("/views/mostrarSalario.jsp");
 					rd.forward(request, response);
 				}
@@ -199,7 +220,6 @@ public class FrontController extends HttpServlet {
 			}
 		}
 
-		// doGet(request, response);
 	}
 
 }

@@ -15,12 +15,6 @@
         <input type="text" name="dni" required>
         <input type="submit" value="Mostrar salario">
     </form>
-	<!-- 
-    <c:if test="${not empty mensaje}">
-        <p style="color:red;"><c:out value="${mensaje}"/></p>
-    </c:if>
-	-->
-	
 	<c:if test="${not empty mensaje}">
     	<p style="color:red; font-weight:bold">${mensaje}</p>
 	</c:if>
