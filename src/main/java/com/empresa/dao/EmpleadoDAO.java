@@ -31,13 +31,7 @@ public class EmpleadoDAO {
 
 			statement.setString(3, String.valueOf(empleado.getSexo()));
 
-			/* PRUEBA */
-			/*
-			 * System.out.println("Valor que se va a insertar en sexo: '" +
-			 * String.valueOf(empleado.getSexo()) + "'"); statement.setString(3,
-			 * String.valueOf(empleado.getSexo()));
-			 */
-			/* PRUEBA */
+			
 
 			statement.setInt(4, empleado.getCategoria());
 			statement.setInt(5, empleado.getAnyos());
@@ -173,14 +167,6 @@ public class EmpleadoDAO {
 	private Connection obtenerConexion() throws SQLException {
 		return Conexion.getConnection();
 	}
-	/*
-	private static final int SUELDO_BASE[] = { 50000, 70000, 90000, 110000, 130000, 150000, 170000, 190000, 210000,
-			230000 };
-
-	public int calcularSalario(Empleados emp) {
-		return SUELDO_BASE[emp.getCategoria() - 1] + emp.getAnyos() * 5000;
-	}
-	*/
 	
 	public List<Empleados> buscarEmpleados(String criterio) throws SQLException {
 	    List<Empleados> lista = new ArrayList<>();
