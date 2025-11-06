@@ -16,7 +16,7 @@
 			<td><a href="empleados?opcion=listar">Listar Empleados</a></td>
 		</tr>
 		<tr>
-			<td><a href="empleados?opcion=sueldo">Mostar Salario</a></td>
+			<td><a href="empleados?opcion=salario">Mostar Salario</a></td>
 		</tr>
 	</table>
 </body>
