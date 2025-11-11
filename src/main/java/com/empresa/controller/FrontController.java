@@ -17,6 +17,10 @@ import com.empresa.dao.EmpleadoDAO;
 import com.empresa.empleados.Empleados;
 import com.empresa.factory.SalarioFactory;
 import com.empresa.strategy.EstrategiaSalario;
+import com.empresa.observer.EmpleadoSubject;
+import com.empresa.observer.EmpleadoLogger;
+
+
 /*
 import com.empresa.strategy.SalarioPorCategoriaYEanos;
 */
@@ -50,6 +54,7 @@ public class FrontController extends HttpServlet {
 			System.out.println("Usted a presionado la opcion crear");
 			RequestDispatcher requestDispatcher = request.getRequestDispatcher("/views/crear.jsp");
 			requestDispatcher.forward(request, response);
+			
 		} else if (opcion.equals("listar")) {
 
 			EmpleadoDAO DAO = new EmpleadoDAO();
@@ -149,6 +154,13 @@ public class FrontController extends HttpServlet {
 			try {
 				empleadoDAO.guardar(empleado);
 				System.out.println("Registro guardado satisfactoriamente...");
+				
+				// Observer: notificar que se ha creado un empleado
+			    EmpleadoSubject subject = new EmpleadoSubject();
+			    EmpleadoLogger logger = new EmpleadoLogger();
+			    subject.agregarObservador(logger);
+			    subject.notificar(empleado, "Se ha creado un empleado");
+				
 				RequestDispatcher requestDispatcher = request.getRequestDispatcher("/index.jsp");
 				requestDispatcher.forward(request, response);
 
@@ -168,6 +180,13 @@ public class FrontController extends HttpServlet {
 			try {
 				empleadoDAO.editar(empleado);
 				System.out.println("Registro editado satisfactoriamente...");
+				
+				// Observer: notificar que se ha creado un empleado
+			    EmpleadoSubject subject = new EmpleadoSubject();
+			    EmpleadoLogger logger = new EmpleadoLogger();
+			    subject.agregarObservador(logger);
+			    subject.notificar(empleado, "Se ha editado un empleado");
+				
 				RequestDispatcher requestDispatcher = request.getRequestDispatcher("/index.jsp");
 				requestDispatcher.forward(request, response);
 			} catch (SQLException e) {
@@ -192,6 +211,11 @@ public class FrontController extends HttpServlet {
 
 		            request.setAttribute("empleado", empleado);
 		            request.setAttribute("salario", salario); // enviamos salario a la JSP
+		            
+		            EmpleadoSubject subject = new EmpleadoSubject();
+		            EmpleadoLogger logger = new EmpleadoLogger();
+		            subject.agregarObservador(logger);
+		            subject.notificar(empleado, "Se ha consultado el salario de un empleado");
 
 		            RequestDispatcher rd = request.getRequestDispatcher("/views/mostrarSalario.jsp");
 		            rd.forward(request, response);
