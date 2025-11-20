@@ -32,7 +32,6 @@ public class EmpleadoDAO {
 			statement.setString(3, String.valueOf(empleado.getSexo()));
 
 			
-
 			statement.setInt(4, empleado.getCategoria());
 			statement.setInt(5, empleado.getAnyos());
 

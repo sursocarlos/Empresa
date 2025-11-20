@@ -10,10 +10,16 @@ import java.time.format.DateTimeFormatter;
 
 public class EmpleadoLogger implements Observer {
 
+	/*
+	 * Estas constantes definen donde se guardará el log
+	 * */
     private static final String ESCRITORIO = System.getProperty("user.home") + File.separator + "Desktop";
     private static final String CARPETA_LOGS = ESCRITORIO + File.separator + "Logs";
     private static final String ARCHIVO_LOG = CARPETA_LOGS + File.separator + "empleados_log.txt";
 
+    /*
+     * actualizar(): se llama automáticamente cada vez que el EmpleadoSubject notifica un cambio.
+     * */
     @Override
     public void actualizar(Empleados empleado, String accion) {
         try {
@@ -24,15 +30,17 @@ public class EmpleadoLogger implements Observer {
             }
 
             // Crear FileWriter en modo append
+            // Escribe en el archivo sin borrar lo anterior
             FileWriter writer = new FileWriter(ARCHIVO_LOG, true);
 
-            // Fecha y hora actual
+            // Obtiene la fecha y hora actual
             LocalDateTime ahora = LocalDateTime.now();
             String fecha = ahora.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
 
             // Escribir log
             writer.write(fecha + " - Acción: " + accion + " sobre empleado DNI: " + empleado.getDni() + "\n");
 
+            //Cierra el archivo y guarda los cambios
             writer.close();
 
             System.out.println("Log guardado correctamente en: " + ARCHIVO_LOG);
